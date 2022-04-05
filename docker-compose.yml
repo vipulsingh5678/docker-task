@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  mongodb_container:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+
+    ports:
+      - 3306:3306
+#    volumes:
+#      - mongodb_data_container:/data/db
+    restart: always
+    network_mode: host
+
+  php:
+    build: ./LAMPCONTAINED
+    network_mode: host
+    volumes:
+      - ./LAMPCONTAINED/src/:/var/www/html/
+      - ./tmp/:/var/www/html/tmp/ 
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./LAMPCONTAINED/src/:/var/www/html/
+      - ./LAMPCONTAINED/sites-enabled/:/etc/nginx/conf.d
+    # ports:
+    #   - 80:80
+    restart: always
+    network_mode: host
+      
+
+  redis:
+    image: redis:5.0
+    restart: always
+    ports:
+      - '6379:6379'   
+    network_mode: host
+    
+
+
+
+
+volumes:
+  mongodb_data_container:
+  LAMPCONTAINED:
+
