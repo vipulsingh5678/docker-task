@@ -1,0 +1,68 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ./docker/nginx/ssl/:/etc/ssl/
+      - ./app/:/var/www/html/
+#    networks:
+ #     - my-net
+
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+  #  networks:
+  #    - my-net
+
+  phalcon:
+    build: ./docker/phalcon
+    container_name: phalcon
+    volumes:
+      - ./app/:/var/www/html/
+      - ./docker/phalcon/tmp/:/var/www/html/tmp/
+  #  networks:
+  #    - my-net
+
+  redis:
+    image: redis:5.0
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'   
+ #   networks:
+  #    - my-net
+  
+  node:
+    build: ./docker/node
+    container_name: node
+    restart: always
+    ports:
+      - 3000:3000
+      - 4001:4001
+    volumes:
+      - ./app/:/var/www/html/
+    
+        
+
+#networks:
+  #my-net:
+   # driver: bridge
+
+volumes:
+  mongodb_data_container:
+  app:
+  docker:
+
